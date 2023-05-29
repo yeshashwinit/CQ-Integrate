@@ -1,0 +1,21 @@
+<template>
+    <lightning-card title="Display CQ Parts on click Of Button" icon-name="custom:custom63">
+        <div class="slds-m-around_medium">
+            <p class="slds-m-bottom_small">
+                <lightning-button label="Get CQ Parts" onclick={handleGetCQParts}></lightning-button>
+            
+            </p>
+            <template if:true={cqPart}>
+                <template for:each={cqPart} for:item=cqprt>
+                     <h4 key={cqprt.Name}>{cqprt.Name}</h4>
+                     <h4 key={cqprt.yas92__Active__c}>{cqprt.Active__c}</h4>
+                     <h4 key={cqprt.yas92__Part_Number__c}>{cqprt.Part_Number__c}</h4>
+                     <h4 key={cqprt.Email}>{cqprt.Email}</h4>             
+                </template>
+                </template>
+                <template if:true={error}>
+                 {errorMsg}
+             </template>
+        </div>
+            </lightning-card>
+</template>
