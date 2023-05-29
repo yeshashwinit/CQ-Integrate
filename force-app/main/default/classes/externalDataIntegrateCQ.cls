@@ -17,19 +17,26 @@ public with sharing class externalDataIntegrateCQ {
         
        List<SQX_Part__c> cqpartList= new List<SQX_Part__c>();
       List<Account> accList = [SELECT ID,name FROM Account WHERE Name LIKE '%Volume%'];
-       Map<ID,String> accountnameMap=new Map<ID,String>();
-       accountnameMap.put(accList.id,accList.name);
+       Map<String,Account> accountnameMap=new Map<String,Account>();
+       for(Account acc:accList){
+       accountnameMap.put(acc.name,acc);
+       }
        
         for(JSONParserClass parsedList:parsed){
             SQX_Part__c cqpart=new SQX_Part__c();
         cqpart.Name= parsedList.Part_Name ;
         cqpart.Active__c=true;
         cqpart.Part_Number__c=parsedList.x_id;
-        
+        if(parsedList.Total_Quantity_Shipped<99){
+            cqpart.Account__c= accountnameMap.get('Low Volume Acc').id;
+        }
+        else{
+            cqpart.Account__c= accountnameMap.get('High Volume Acc').id;
+        }
             cqpartList.add(cqpart);
         }
         
-        insert cqpartList;
+        upsert cqpartList Part_Number__c;
         system.debug('Parts-->' +cqpartList);
         return cqpartList;
 }
